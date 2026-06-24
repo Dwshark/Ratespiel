@@ -40,6 +40,7 @@ jobs:
           ANDROIDSDK: $HOME/android-sdk
           ANDROIDNDK: $HOME/.buildozer/android/platform/android-ndk-r25b
         run: |
+          cd $GITHUB_WORKSPACE/Ratespiel
           buildozer -v android debug --spec buildozer.spec
 
 
