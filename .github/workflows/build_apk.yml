@@ -21,13 +21,14 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Install Android SDK (fixed structure)
+      - name: Install Android SDK (correct structure)
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip commandlinetools-linux-9477386_latest.zip
-          mv cmdline-tools latest
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
+          unzip tools.zip
+          mkdir -p $HOME/android-sdk/cmdline-tools/latest
+          mv cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
       - name: Accept licenses
