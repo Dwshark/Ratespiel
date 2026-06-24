@@ -31,9 +31,14 @@ jobs:
           mv cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-      - name: Accept licenses
+            - name: Accept licenses
         run: |
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$HOME/android-sdk
+
+      - name: Debug workspace
+        run: |
+          echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
+          ls -R $GITHUB_WORKSPACE
 
       - name: Build APK
         env:
@@ -43,4 +48,5 @@ jobs:
           cd $GITHUB_WORKSPACE
           rm -rf .buildozer
           buildozer -v android debug --spec buildozer.spec
+
 
