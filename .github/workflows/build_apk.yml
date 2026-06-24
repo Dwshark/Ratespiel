@@ -14,26 +14,31 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip python3-setuptools python3-wheel git zip openjdk-17-jdk
+          sudo apt install -y python3-pip python3-setuptools python3-wheel git zip openjdk-17-jdk unzip
 
       - name: Install Buildozer
         run: |
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Install Android SDK
+      - name: Install Android SDK + NDK
         run: |
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
-          unzip tools.zip
-          mkdir -p $HOME/android-sdk/cmdline-tools/latest
-          mv cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+          mkdir -p /home/runner/android-sdk
+          mkdir -p /home/runner/android-ndk
 
-      - name: Accept licenses
-        run: |
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$HOME/android-sdk
+          # SDK installieren
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
+          unzip tools.zip -d /home/runner/android-sdk/cmdline-tools
+          mkdir -p /home/runner/android-sdk/cmdline-tools/latest
+          mv /home/runner/android-sdk/cmdline-tools/cmdline-tools/* /home/runner/android-sdk/cmdline-tools/latest/
+
+          yes | /home/runner/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=/home/runner/android-sdk \
+            "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+          # NDK installieren
+          wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip -O ndk.zip
+          unzip ndk.zip -d /home/runner/android-ndk
+          mv /home/runner/android-ndk/android-ndk-r25b /home/runner/android-ndk/ndk
 
       - name: Debug workspace
         run: |
@@ -42,9 +47,10 @@ jobs:
 
       - name: Build APK
         env:
-          ANDROIDSDK: $HOME/android-sdk
-          ANDROIDNDK: $HOME/.buildozer/android/platform/android-ndk-r25b
+          ANDROIDSDK: /home/runner/android-sdk
+          ANDROIDNDK: /home/runner/android-ndk/ndk
         run: |
-          cd $GITHUB_WORKSPACE
-          rm -rf .buildozer
-          buildozer -v android debug --spec buildozer.spec
+          rm -rf .buildozer/android/platform/android-sdk
+          rm -rf .buildozer/android/platform/android-ndk*
+
+          buildozer -v android debug
