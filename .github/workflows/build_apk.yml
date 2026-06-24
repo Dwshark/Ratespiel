@@ -40,4 +40,5 @@ jobs:
           ANDROIDSDK: $HOME/android-sdk
           ANDROIDNDK: $HOME/.buildozer/android/platform/android-ndk-r25b
         run: |
-          buildozer android debug
+          buildozer -v --spec buildozer.spec android debug
+
