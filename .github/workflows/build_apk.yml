@@ -35,7 +35,7 @@ jobs:
         run: |
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$HOME/android-sdk
 
-            - name: Build APK
+      - name: Build APK
         env:
           ANDROIDSDK: $HOME/android-sdk
           ANDROIDNDK: $HOME/.buildozer/android/platform/android-ndk-r25b
